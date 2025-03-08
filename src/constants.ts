@@ -48,4 +48,9 @@ export const REFERENCE_DATA_TYPES = [
   "usagetypes",
   "wheelbases",
   "wheelformulas",
+  // Car related reference data types, can be implemented better in the future
+  "classes/Car/categories",
+  "classes/Car/makes",
+  "sites/GERMANY/classes/Car/usedcarseals",
+  "sites/GERMANY/vatrates",
 ];
