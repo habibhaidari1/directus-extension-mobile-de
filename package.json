@@ -1,0 +1,45 @@
+{
+  "name": "directus-extension-mobile-de",
+  "description": "This Directus interface extension integrates the mobile.de Seller API to automatically fetch the relevant selection options for specific fields.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/habibhaidari1/directus-extension-mobile-de"
+  },
+  "homepage": "https://github.com/habibhaidari1/directus-extension-mobile-de",
+  "icon": "extension",
+  "version": "1.0.0",
+  "keywords": [
+    "directus",
+    "directus-extension",
+    "directus-extension-interface"
+  ],
+  "type": "module",
+  "files": [
+    "dist"
+  ],
+  "author": "Habib Haidari",
+  "license": "MIT",
+  "directus:extension": {
+    "type": "interface",
+    "path": "dist/index.js",
+    "source": "src/index.ts",
+    "host": "^10.10.0"
+  },
+  "scripts": {
+    "build": "directus-extension build",
+    "dev": "directus-extension build -w --no-minify",
+    "link": "directus-extension link",
+    "validate": "directus-extension validate"
+  },
+  "devDependencies": {
+    "@directus/extensions-sdk": "^13.0.3",
+    "@directus/types": "^13.0.0",
+    "@types/jest": "^29.5.14",
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0",
+    "ts-jest": "^29.2.6",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.2",
+    "vue": "^3.5.13"
+  }
+}
