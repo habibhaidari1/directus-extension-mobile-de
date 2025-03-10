@@ -1,7 +1,33 @@
 export const BASE_URL = "https://services.mobile.de";
 
-export const REFERENCE_DATA_TYPES = [
-  "classes",
+export const REFERENCE_DATA_TYPE_CLASSES = "classes";
+
+export const REFERENCE_DATA_TYPE_MAKES = "makes";
+
+export const REFERENCE_DATA_TYPE_MODELS = "models";
+
+export const REFERENCE_DATA_TYPE_SITES = "sites";
+
+
+export const SITE_DEPENDENT_REFERENCE_DATA_TYPE_CATEGORIES: SiteDependentReferenceDataTypesEndpoint =
+  {
+    endpoint: "categories",
+    path: ["classes"],
+  };
+
+export const SITE_DEPENDENT_REFERENCE_DATA_TYPE_VATRATES: SiteDependentReferenceDataTypesEndpoint =
+  {
+    endpoint: "vatrates",
+    path: ["sites"],
+  };
+
+export const SITE_DEPENDENT_REFERENCE_DATA_TYPE_USEDCARSEALS: SiteDependentReferenceDataTypesEndpoint =
+  {
+    endpoint: "usedcarseals",
+    path: ["sites", "classes"],
+  };
+
+export const SITE_INDEPENDENT_REFERENCE_DATA_TYPES = [
   "airbags",
   "batterymanufacturers",
   "batteries",
@@ -48,9 +74,4 @@ export const REFERENCE_DATA_TYPES = [
   "usagetypes",
   "wheelbases",
   "wheelformulas",
-  // Car related reference data types, can be implemented better in the future
-  "classes/Car/categories",
-  "classes/Car/makes",
-  "sites/GERMANY/classes/Car/usedcarseals",
-  "sites/GERMANY/vatrates",
 ];

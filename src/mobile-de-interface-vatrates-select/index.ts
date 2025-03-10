@@ -1,12 +1,12 @@
 import { defineInterface } from "@directus/extensions-sdk";
 import { DeepPartial, Field } from "@directus/types";
 import InterfaceClass from "./interface.vue";
-import { REFERENCE_DATA_TYPES } from "./constants";
+import { SITE_DEPENDENT_REFERENCE_DATA_TYPE_VATRATES } from "../constants";
 
 export default defineInterface({
-  id: "directus-extension-mobile-de",
-  name: "Mobile de Reference Data",
-  description: "Mobile DE Seller API Reference Data Types",
+  id: "mobile-de-interface-vatrates-select",
+  name: "Mobile.de Vat Rates",
+  description: "Mobile DE Seller API Vat Rates",
   icon: "directions_car",
   component: InterfaceClass,
   types: ["string"],
@@ -16,24 +16,21 @@ export default defineInterface({
       standard: DeepPartial<Field>[];
       advanced: DeepPartial<Field>[];
     } = {
-      standard: [
-        {
-          field: "reference_data_type",
-          name: "Reference Data Type",
+      standard: SITE_DEPENDENT_REFERENCE_DATA_TYPE_VATRATES.path.map((item) => {
+        return {
+          field: item,
+          name: item,
           type: "string",
           meta: {
-            required: true,
-            width: "full",
-            interface: "select-dropdown",
+            width: "half",
+            interface: "input",
             options: {
-              choices: REFERENCE_DATA_TYPES.map((type) => ({
-                text: type,
-                value: type,
-              })),
+              label: item,
+              trim: true,
             },
           },
-        },
-      ],
+        };
+      }),
       advanced: [],
     };
 

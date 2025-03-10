@@ -1,6 +1,10 @@
+<template>
+  <v-select v-model="model" :items="items" item-text="description" item-value="name" :disabled="disabled"
+    :loading="isLoading" />
+</template>
+
 <script setup lang="ts">
 import { ref, computed, onMounted } from "vue";
-import { fetchRefData } from './utils/api'
 
 // Define props with default values
 const props = withDefaults(
@@ -8,17 +12,16 @@ const props = withDefaults(
     value: string | null;
     type?: string;
     disabled?: boolean;
-    reference_data_type: string;
+    classes: string;
   }>(),
   {
-    reference_data_type: null,
     value: null,
     disabled: false,
   },
 );
 
 const emit = defineEmits<{
-  (event: "input", value: string): void;
+  (event: "input", value: string | null): void;
 }>();
 
 // Create a computed property for v-model
@@ -36,7 +39,11 @@ const isLoading = ref(false);
 onMounted(async () => {
   isLoading.value = true;
   try {
-    items.value = await fetchRefData(props.reference_data_type);
+    const response = await fetch(`/mobile-de/refdata/classes/${props.classes}/categories`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch data, status: ${response.status}`);
+    }
+    items.value = await response.json();
   } catch (error) {
     console.error("Failed to load Reference Data:", error);
   } finally {
@@ -44,8 +51,3 @@ onMounted(async () => {
   }
 });
 </script>
-
-<template>
-  <v-select v-model="model" :items="items" item-text="description" item-value="name" :disabled="disabled"
-    :clearable="clear" :loading="isLoading" />
-</template>
