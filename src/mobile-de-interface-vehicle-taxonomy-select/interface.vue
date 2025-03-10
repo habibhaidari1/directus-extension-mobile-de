@@ -38,6 +38,7 @@
   </div>
 </template>
 
+
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 
@@ -60,6 +61,7 @@ const emit = defineEmits<{
 
 // Component state
 const isInitializing = ref(true);
+const preventEmit = ref(false); // Add this flag to prevent emissions during initialization
 
 // Selected values
 const selectedClass = ref<string | null>(props?.value?.class || null);
@@ -79,7 +81,64 @@ const isLoadingModels = ref(false);
 // Initialization
 onMounted(async () => {
   await loadClasses();
+  isInitializing.value = false;
 });
+
+// Update the model and emit changes
+const emitSelection = (): void => {
+  if (preventEmit.value) {
+    return;
+  }
+
+  emit("input", {
+    class: selectedClass.value,
+    make: selectedMake.value,
+    model: selectedModel.value
+  });
+};
+
+// KEEP ONLY ONE watcher for props.value
+watch(() => props.value, async (newValue, oldValue) => {
+  // Skip if values are identical
+  if (JSON.stringify(newValue) === JSON.stringify(oldValue)) {
+    return;
+  }
+  
+  if (!newValue) {
+    isInitializing.value = false;
+    return;
+  }
+  
+  isInitializing.value = true;
+  preventEmit.value = true; // Prevent emissions during initialization
+  
+  // Load classes if needed
+  if (classes.value.length === 0) {
+    await loadClasses();
+  }
+  
+  // Set the class value
+  selectedClass.value = newValue.class;
+  
+  // Load makes if we have a class
+  if (selectedClass.value) {
+    await loadMakes(selectedClass.value);
+    
+    // Set the make value
+    selectedMake.value = newValue.make;
+    
+    // Load models if we have a make
+    if (selectedMake.value) {
+      await loadModels(selectedClass.value, selectedMake.value);
+      selectedModel.value = newValue.model;
+    }
+  }
+  
+  isInitializing.value = false;
+  preventEmit.value = false; // Re-enable emissions
+}, { immediate: true });
+
+// Rest of your code remains the same
 
 // API data fetching functions
 const loadClasses = async (): Promise<void> => {
@@ -121,49 +180,13 @@ const loadModels = async (classValue: string, makeValue: string): Promise<void> 
   }
 };
 
-// Update the model and emit changes
-const emitSelection = (): void => {
-  emit("input", {
-    class: selectedClass.value,
-    make: selectedMake.value,
-    model: selectedModel.value
-  });
-};
-
-// Watch for external value changes (including initial values)
-watch(() => props.value, async (newValue) => {
-  if (!newValue) return;
-  
-  isInitializing.value = true;
-  
-  // Load classes if needed
-  if (classes.value.length === 0) {
-    await loadClasses();
-  }
-  
-  // Set the class value
-  selectedClass.value = newValue.class;
-  
-  // Load makes if we have a class
-  if (selectedClass.value) {
-    await loadMakes(selectedClass.value);
-    
-    // Set the make value
-    selectedMake.value = newValue.make;
-    
-    // Load models if we have a make
-    if (selectedMake.value) {
-      await loadModels(selectedClass.value, selectedMake.value);
-      selectedModel.value = newValue.model;
-    }
-  }
-  
-  isInitializing.value = false;
-}, { immediate: true });
 
 // Handle user selection changes
 watch(selectedClass, async (newClass, oldClass) => {
-  if (isInitializing.value || newClass === oldClass) return;
+  
+  if (isInitializing.value || newClass === oldClass) {
+    return;
+  }
   
   selectedMake.value = null;
   selectedModel.value = null;
