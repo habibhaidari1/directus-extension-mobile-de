@@ -1,5 +1,5 @@
 <template>
-  <v-select v-model="model" :items="items" item-text="description" item-value="name" :disabled="disabled"
+  <v-select v-model="model" :items="items" item-text="name" item-value="name" :disabled="disabled"
     :loading="isLoading" />
 </template>
 
